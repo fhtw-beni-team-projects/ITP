@@ -1,85 +1,66 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+  <div id="app">
+    <div v-if="!showChessboard" class="menu">
+      <button class="menu-button" @click="showChessboard = true">New Game</button>
+      <button class="menu-button" @click="showChessboard = true">Join Game</button>
     </div>
-  </header>
-
-  <RouterView />
+    <Chessboard v-else/>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
+<script>
+import Chessboard from './components/Chessboard.vue';
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
+export default {
+  name: 'App',
+  components: {
+    Chessboard,
+  },
+  data() {
+    return {
+      showChessboard: false,
+    };
+  },
+  methods: {
+    createNewGame() {
+      // Code to start a new game goes here
+      this.gameStarted = true;
+    },
+    joinGame() {
+      // Code to join an existing game goes here
+      this.gameStarted = true;
+    },
+  }
+};
+</script>
 
-nav {
-  width: 100%;
-  font-size: 12px;
+<style>
+  .menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  margin-top: 2rem;
+  margin-top: 50px;
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
+.menu-button {
+  background-color: #84A98C;
+  color: white;
+  border: none;
+  padding: 15px 25px;
+  
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1.5rem;
+  box-shadow: 0px 3px 0px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.2s ease-in-out;
 }
 
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.menu-button:hover {
+  background-color: #52796F;
+  box-shadow: 0px 6px 0px rgba(0, 0, 0, 0.3);
 }
 </style>
+
