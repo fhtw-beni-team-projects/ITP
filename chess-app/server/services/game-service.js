@@ -22,8 +22,10 @@ class GameService {
 
     join(gameId) {
         // Return either white or black, this will let the user know which color they are
-        return PlayerState.WHITE
-        return PlayerState.BLACK
+
+        /* Your logic here */
+
+        return PlayerState.WHITE // PlayerState.BLACK
     }
 
     move(gameId, who, move /* in FEN notation */) {
