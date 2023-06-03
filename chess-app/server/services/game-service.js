@@ -36,6 +36,11 @@ class GameService {
     }
 
     move(gameId, who, move /* in SAN notation */) {
+        game = this.games[gameId];
+        if ((Date.now() - game.last_time) > game.time[game.game.turn()]) {
+            return game.game.turn() == 'w' ? GameState.BlackWon(this.#getPlayerStates(gameId), players, this.#getBoard(gameId)) : GameState.WhiteWon(this.#getPlayerStates(gameId), players, this.#getBoard(gameId))
+        }
+
         this.games[gameId].move(move);
 
         const players = this.#getPlayerStates(gameId)

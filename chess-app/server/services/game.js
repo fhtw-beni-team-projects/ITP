@@ -5,7 +5,7 @@ class Game
 	game;
 	time;
 	increment;
-	
+
 	constructor(time, increment, fen) {
 		this.time['w'] = time * 1000;
 		this.time['b'] = time * 1000;
