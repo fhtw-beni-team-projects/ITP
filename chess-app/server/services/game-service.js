@@ -7,9 +7,10 @@ class GameService {
 
     createGame() {
         gameId = this.generateGameId();
+        time = 900;
+        increment = 10;
 
-        this.games[gameId] = new Game();
-        // "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+        this.games[gameId] = new Game(time, increment, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         return gameId;
     }
 
