@@ -1,10 +1,16 @@
 const { GameState, PlayerState } = require("./game-state")
+const { Game } = require("./game")
 
 class GameService {
-    static ID_LENGTH = 6
+    static ID_LENGTH = 6;
+    games = new Map();
 
     createGame() {
-        return this.generateGameId()
+        gameId = this.generateGameId();
+
+        this.games[gameId] = new Game();
+        // "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+        return gameId;
     }
 
     generateGameId() {
@@ -28,11 +34,18 @@ class GameService {
         return PlayerState.WHITE // PlayerState.BLACK
     }
 
-    move(gameId, who, move /* in FEN notation */) {
+    move(gameId, who, move /* in SAN notation */) {
+        this.games[gameId].move(move);
+
         const players = this.#getPlayerStates(gameId)
         const board = this.#getBoard(gameId)
 
-        /* Your logic here */
+        if (this.games[gameId].game.isCheckmate()) {
+            return this.games[gameId].game.turn() == 'w' ? GameState.BlackWon(gameId, players, board) : GameState.WhiteWon(gameId, players, board)
+        }
+        if (this.games[gameId].game.isGameOver()) {
+            return GameState.Draw(gameId, players, board)
+        }
 
         return GameState.Running(gameId, players, board)
     }
@@ -58,7 +71,7 @@ class GameService {
         }
     }
     #getBoard(gameId) {
-        return "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+        return this.games[gameId].game.fen();
     }
 }
 

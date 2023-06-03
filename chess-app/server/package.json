@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chess.js": "^1.0.0-beta.6",
     "cors": "^2.8.5",
     "express.js": "^1.0.0",
     "http": "^0.0.1-security",

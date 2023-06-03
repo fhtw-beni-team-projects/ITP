@@ -1,25 +1,3 @@
-/*
-
-	var board = {
-		field: { // size 64
-			null, // empty field
-			{
-				type: "Queen",
-				color: "w"
-			}
-		}
-		side: "w",
-		castle: {
-			white: {
-				king: true,
-				queen: true
-			}
-		},
-		ep: "e3",
-		halfmove: 0,
-		fullmove: 0
-	}
- */
 class board
 {
 	constructor(fen)
@@ -386,6 +364,14 @@ class board
 				});
 				break;
 			}
+		}
+
+		// TODO: testing
+
+		this.board.at(from) == null;
+		this.board.at(to) == piece;
+		if (piece == "King" && Math.abs(from - to) == 2) {
+			// TODO: rook
 		}
 	}
 
