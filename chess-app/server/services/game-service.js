@@ -72,8 +72,8 @@ class GameService {
 
     #getPlayerStates(gameId) {
         return {
-            white: new PlayerState(60, false),
-            black: new PlayerState(40, false)
+            white: new PlayerState(60),
+            black: new PlayerState(40)
         }
     }
     #getBoard(gameId) {
