@@ -9,29 +9,31 @@
           :id="`${9-row}-${col}`"
           @click="selectSquare(`${9-row}`,`${col}`)">
           
-          <font-awesome-icon v-if="row === 2" :icon="['fass', 'chess-pawn']" style="color: #000000; height: 90%;"/>
-          <font-awesome-icon v-if="row === 7" :icon="['fass', 'chess-pawn']" style="color: #ffffff; height: 90%;"/>
-          <font-awesome-icon v-if="(row===1 && col ===1) || (row===1 && col ===8) " :icon="['fass', 'chess-rook']" style="color: #000000; height: 90%;" draggable="true"/>
-          <font-awesome-icon v-if="(row===8 && col ===1) || (row===8 && col ===8) " :icon="['fass', 'chess-rook']" style="color: #ffffff; height: 90%;"/>
-          <font-awesome-icon v-if="(row===1 && col ===2) || (row===1 && col ===7) " :icon="['fass', 'chess-knight']" style="color: #000000; height: 90%;" />
-          <font-awesome-icon v-if="(row===8 && col ===2) || (row===8 && col ===7) " :icon="['fass', 'chess-knight']" style="color: #ffffff; height: 90%;" />
-          <font-awesome-icon v-if="(row===1 && col ===3) || (row===1 && col ===6) " :icon="['fass', 'chess-bishop']" style="color: #000000; height: 90%;" />
-          <font-awesome-icon v-if="(row===8 && col ===3) || (row===8 && col ===6) " :icon="['fass', 'chess-bishop']" style="color: #ffffff; height: 90%;" draggable="true"/>
-          <font-awesome-icon v-if="row === 1 && col === 4" :icon="['fass', 'chess-queen']"  style="color: #000000; height: 90%;"/>
-          <font-awesome-icon v-if="row === 8 && col === 4" :icon="['fass', 'chess-queen']"  style="color: #ffffff; height: 90%;"/>
-          <font-awesome-icon v-if="row === 1 && col === 5" :icon="['fass', 'chess-king']"  style="color: #000000; height: 90%;"/>
-          <font-awesome-icon v-if="row === 8 && col === 5" :icon="['fass', 'chess-king']"  style="color: #ffffff; height: 90%;"/>
+          <font-awesome-icon v-if="row === 2" :icon="['fass', 'chess-pawn']" style="color: #000000; height: 90%; pointer-events: none; z-index: 2;"/>
+          <font-awesome-icon v-if="row === 7" :icon="['fass', 'chess-pawn']" style="color: #ffffff; height: 90%; pointer-events: none; z-index: 2;"/>
+          <font-awesome-icon v-if="(row===1 && col ===1) || (row===1 && col ===8) " :icon="['fass', 'chess-rook']" style="color: #000000; height: 90%; pointer-events: none; z-index: 2;"/>
+          <font-awesome-icon v-if="(row===8 && col ===1) || (row===8 && col ===8) " :icon="['fass', 'chess-rook']" style="color: #ffffff; height: 90%; pointer-events: none; z-index: 2;"/>
+          <font-awesome-icon v-if="(row===1 && col ===2) || (row===1 && col ===7) " :icon="['fass', 'chess-knight']" style="color: #000000; height: 90%; pointer-events: none; z-index: 2;"/>
+          <font-awesome-icon v-if="(row===8 && col ===2) || (row===8 && col ===7) " :icon="['fass', 'chess-knight']" style="color: #ffffff; height: 90%; pointer-events: none; z-index: 2;"/>
+          <font-awesome-icon v-if="(row===1 && col ===3) || (row===1 && col ===6) " :icon="['fass', 'chess-bishop']" style="color: #000000; height: 90%; pointer-events: none; z-index: 2;"/>
+          <font-awesome-icon v-if="(row===8 && col ===3) || (row===8 && col ===6) " :icon="['fass', 'chess-bishop']" style="color: #ffffff; height: 90%; pointer-events: none; z-index: 2;"/>
+          <font-awesome-icon v-if="row === 1 && col === 4" :icon="['fass', 'chess-queen']"  style="color: #000000; height: 90%; pointer-events: none; z-index: 2;"/>
+          <font-awesome-icon v-if="row === 8 && col === 4" :icon="['fass', 'chess-queen']"  style="color: #ffffff; height: 90%; pointer-events: none; z-index: 2;"/>
+          <font-awesome-icon v-if="row === 1 && col === 5" :icon="['fass', 'chess-king']"  style="color: #000000; height: 90%; pointer-events: none; z-index: 2;"/>
+          <font-awesome-icon v-if="row === 8 && col === 5" :icon="['fass', 'chess-king']"  style="color: #ffffff; height: 90%; pointer-events: none; z-index: 2;"/>
         </div>
       </div>
     </div>
   </template>
   
-  <script>
+<script>
 
   import { Chess } from 'chess.js';
 
   var greyTiles = [];
   const game = new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
+  var currentPiece = "";
 
   function highlightTiles(id, chessId) {
 
@@ -39,6 +41,8 @@
 
       var tile = document.getElementById(id);
       var possibleMoves = game.moves({square: chessId, verbose: true});
+
+      var piece = game.get(chessId);
       
       if(possibleMoves.length === 0) return;
       //console.log(possibleMoves);
@@ -49,15 +53,25 @@
         greyTiles.push(temp);
         var tile = document.getElementById(temp);
         tile.style.backgroundColor = "#FF0000";
+        console.log("yeet " + temp)
         tile.addEventListener("click", moveChessPiece);
+        currentPiece = chessId;
       }
 
       console.log(greyTiles);
   }
 
-  function moveChessPiece() {
+  const moveChessPiece = (event) => {
+    
+    var newTile = "";
+    newTile = event.target.id;
+    var moveTo = translateToChessId(newTile[0], newTile[2]);
+    console.log(moveTo);
+    console.log(currentPiece);
+    game.move({ from: currentPiece, to: moveTo });
+    console.log(game.ascii());
+    currentPiece = "";
     removeHighlightedTile(greyTiles);
-    console.log("hahaha you moved!");
   }
 
   function removeHighlightedTile(tiles) {
