@@ -10,6 +10,7 @@
 
 <script>
 import Chessboard from './components/Chessboard.vue';
+import { Chess } from 'chess.js'
 
 export default {
   name: 'App',
