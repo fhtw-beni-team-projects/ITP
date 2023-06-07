@@ -33,11 +33,14 @@
   var greyTiles = [];
   const game = new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
+  const playerColor = "";
+
+  //not the best solution but it is what it is
   var currentPiece = "";
 
   function highlightTiles(id, chessId) {
 
-      if(game.get(chessId)) removeHighlightedTile(greyTiles);
+      if(game.get(chessId).color == game.turn()) removeHighlightedTile(greyTiles);
 
       var tile = document.getElementById(id);
       var possibleMoves = game.moves({square: chessId, verbose: true});
@@ -45,7 +48,6 @@
       var piece = game.get(chessId);
       
       if(possibleMoves.length === 0) return;
-      //console.log(possibleMoves);
 
       for(const object of possibleMoves)
       {
@@ -53,12 +55,11 @@
         greyTiles.push(temp);
         var tile = document.getElementById(temp);
         tile.style.backgroundColor = "#FF0000";
-        console.log("yeet " + temp)
         tile.addEventListener("click", moveChessPiece);
-        currentPiece = chessId;
       }
 
-      console.log(greyTiles);
+      currentPiece = chessId;
+      //console.log(greyTiles);
   }
 
   const moveChessPiece = (event) => {
@@ -66,12 +67,13 @@
     var newTile = "";
     newTile = event.target.id;
     var moveTo = translateToChessId(newTile[0], newTile[2]);
-    console.log(moveTo);
-    console.log(currentPiece);
+    //console.log("move to: " + moveTo);
+    //console.log(currentPiece);
     game.move({ from: currentPiece, to: moveTo });
     console.log(game.ascii());
     currentPiece = "";
     removeHighlightedTile(greyTiles);
+    if(game.isCheckmate()) console.log(playerColor + " won!");
   }
 
   function removeHighlightedTile(tiles) {
