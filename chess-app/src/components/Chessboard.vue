@@ -1,165 +1,240 @@
-
 <template>
-    <div class="chessboard">
-      <div v-for="row in 8" class="row" :key="row">
-        <!-- 9-row cause rows were inverted -->
-        <div v-for="col in 8" 
-          :class="getSquareClass(9-row, col) + (isSelected(9-row, col) ? ' selected' : '')" 
-          :key="`${9-row}${col}`"
-          :id="`${9-row}-${col}`"
-          @click="selectSquare(`${9-row}`,`${col}`)">
-          
-          <font-awesome-icon v-if="row === 2" :icon="['fass', 'chess-pawn']" style="color: #000000; height: 90%; pointer-events: none; z-index: 2;"/>
-          <font-awesome-icon v-if="row === 7" :icon="['fass', 'chess-pawn']" style="color: #ffffff; height: 90%; pointer-events: none; z-index: 2;"/>
-          <font-awesome-icon v-if="(row===1 && col ===1) || (row===1 && col ===8) " :icon="['fass', 'chess-rook']" style="color: #000000; height: 90%; pointer-events: none; z-index: 2;"/>
-          <font-awesome-icon v-if="(row===8 && col ===1) || (row===8 && col ===8) " :icon="['fass', 'chess-rook']" style="color: #ffffff; height: 90%; pointer-events: none; z-index: 2;"/>
-          <font-awesome-icon v-if="(row===1 && col ===2) || (row===1 && col ===7) " :icon="['fass', 'chess-knight']" style="color: #000000; height: 90%; pointer-events: none; z-index: 2;"/>
-          <font-awesome-icon v-if="(row===8 && col ===2) || (row===8 && col ===7) " :icon="['fass', 'chess-knight']" style="color: #ffffff; height: 90%; pointer-events: none; z-index: 2;"/>
-          <font-awesome-icon v-if="(row===1 && col ===3) || (row===1 && col ===6) " :icon="['fass', 'chess-bishop']" style="color: #000000; height: 90%; pointer-events: none; z-index: 2;"/>
-          <font-awesome-icon v-if="(row===8 && col ===3) || (row===8 && col ===6) " :icon="['fass', 'chess-bishop']" style="color: #ffffff; height: 90%; pointer-events: none; z-index: 2;"/>
-          <font-awesome-icon v-if="row === 1 && col === 4" :icon="['fass', 'chess-queen']"  style="color: #000000; height: 90%; pointer-events: none; z-index: 2;"/>
-          <font-awesome-icon v-if="row === 8 && col === 4" :icon="['fass', 'chess-queen']"  style="color: #ffffff; height: 90%; pointer-events: none; z-index: 2;"/>
-          <font-awesome-icon v-if="row === 1 && col === 5" :icon="['fass', 'chess-king']"  style="color: #000000; height: 90%; pointer-events: none; z-index: 2;"/>
-          <font-awesome-icon v-if="row === 8 && col === 5" :icon="['fass', 'chess-king']"  style="color: #ffffff; height: 90%; pointer-events: none; z-index: 2;"/>
-        </div>
+  <div class="chessboard">
+    <div v-for="row in 8" class="row" :key="row">
+      <div v-for="col in 8" 
+        :class="getSquareClass(9 - row, col) + (isSelected(9 - row, col) ? ' selected' : '')" 
+        :key="`${9 - row}${col}`"
+        :id="`${9 - row}-${col}`"
+        @click="selectSquare(`${9 - row}`, `${col}`)">
+        <font-awesome-icon v-if="getPieceIcon(9 - row, col)" :icon="getPieceIcon(9 - row, col)" :style="getPieceStyle(9 - row, col)" />
       </div>
     </div>
-  </template>
-  
+  </div>
+</template>
+
 <script>
+import { Chess } from 'chess.js';
 
-  import { Chess } from 'chess.js';
+var greyTiles = [];
+const game = new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
-  var greyTiles = [];
-  const game = new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-
-  const playerColor = "";
-
-  //not the best solution but it is what it is
-  var currentPiece = "";
-
-  function highlightTiles(id, chessId) {
-
-      if(game.get(chessId).color == game.turn()) removeHighlightedTile(greyTiles);
-
-      var tile = document.getElementById(id);
-      var possibleMoves = game.moves({square: chessId, verbose: true});
-
-      var piece = game.get(chessId);
-      
-      if(possibleMoves.length === 0) return;
-
-      for(const object of possibleMoves)
-      {
-        var temp = reverseTranslation(object.to);
-        greyTiles.push(temp);
-        var tile = document.getElementById(temp);
-        tile.style.backgroundColor = "#FF0000";
-        tile.addEventListener("click", moveChessPiece);
-      }
-
-      currentPiece = chessId;
-      //console.log(greyTiles);
-  }
-
-  const moveChessPiece = (event) => {
-    
-    var newTile = "";
-    newTile = event.target.id;
-    var moveTo = translateToChessId(newTile[0], newTile[2]);
-    //console.log("move to: " + moveTo);
-    //console.log(currentPiece);
-    game.move({ from: currentPiece, to: moveTo });
+export default {
+  name: 'ChessBoard',
+  data() {
+    return {
+       game,
+      selectedSquare: '',
+    };
+  },
+  mounted() {
     console.log(game.ascii());
-    currentPiece = "";
-    removeHighlightedTile(greyTiles);
-    if(game.isCheckmate()) console.log(playerColor + " won!");
-  }
+    this.moveIcons(this.game.fen());
+  },
+  methods: {
+    getSquareClass(row, col) {
+      return (row + col) % 2 === 0 ? 'square white' : 'square black';
+    },
+    isSelected(row, col) {
+      return `${row}-${col}` === this.selectedSquare;
+    },
+    selectSquare(row, col) {
+      const piece = this.translateToChessId(row, col);
+      this.highlightTiles(row + '-' + col, piece);
+    },
+    highlightTiles(id, chessId) {
+      const { game } = this;
+      const piece = game.get(chessId);
 
-  function removeHighlightedTile(tiles) {
-    for(const element of tiles) {
-      var tile = document.getElementById(element);
-      tile.removeAttribute('style');
-      tile.removeEventListener("click", moveChessPiece);
+      if (piece && piece.color === game.turn()) {
+        this.removeHighlightedTile(greyTiles);
+        const possibleMoves = game.moves({ square: chessId, verbose: true });
+
+        if (possibleMoves.length === 0) return;
+        for (const move of possibleMoves) {
+          const temp = this.reverseTranslation(move.to);
+          const tile = document.getElementById(temp);
+          if (tile) {
+            tile.style.backgroundColor = '#000000';
+            tile.addEventListener('click', this.moveChessPiece);
+          }
+        }
+        this.selectedSquare = chessId;
+      }
+    },
+    moveChessPiece(event) {
+      const newTile = event.target.id;
+      const moveTo = this.translateToChessId(newTile[0], newTile[2]);
+      const { game } = this;
+
+      game.move({ from: this.selectedSquare, to: moveTo });
+
+      console.log(game.ascii());
+
+      this.selectedSquare = '';
+      this.removeHighlightedTile();
+
+      if (game.isCheckmate()) {
+        console.log('Checkmate!');
+      } else if (game.in_check()) {
+        console.log('Check!');
+      }
+    },
+    removeHighlightedTile() {
+      const tiles = document.getElementsByClassName('square');
+      for (const tile of tiles) {
+        tile.removeAttribute('style');
+        tile.removeEventListener('click', this.moveChessPiece);
+      }
+    },
+    reverseTranslation(chessTile) {
+      const temp = chessTile.charCodeAt(0) - 96;
+      return chessTile[1] + '-' + temp;
+    },
+    translateToChessId(row, col) {
+      const letterMap = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+      return letterMap[col - 1] + row;
+    },
+    getPieceIcon(row, col) {
+  const chessId = this.translateToChessId(row, col);
+  const piece = this.game.get(chessId);
+
+  if (piece) {
+    switch (piece.type) {
+      case 'p':
+      case 'P':
+        return ['fass', 'chess-pawn'];
+      case 'r':
+      case 'R':
+        return ['fass', 'chess-rook'];
+      case 'n':
+      case 'N':
+        return ['fass', 'chess-knight'];
+      case 'b':
+      case 'B':
+        return ['fass', 'chess-bishop'];
+      case 'q':
+      case 'Q':
+        return ['fass', 'chess-queen'];
+      case 'k':
+      case 'K':
+        return ['fass', 'chess-king'];
+      default:
+        break;
     }
-    greyTiles = [];
-  };
-
-  function reverseTranslation(chessTile) {
-    var temp = chessTile.charCodeAt(0) - 96;
-    return chessTile[1] + "-" + temp;
   }
+  return null;
+},
 
-  function translateToChessId(row, col) {
-    const letterMap = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-    return letterMap[col-1] + row;
-  }
+    getPieceStyle(row, col) {
+      const chessId = this.translateToChessId(row, col);
+      const piece = this.game.get(chessId);
+      const style = {};
 
-  export default {
-    name: 'Chess-board',
-    data() {
-      return {
-        selectedSquare: ''
+      if (piece) {
+        style.color = piece.color === 'w' ? '#ffffff' : '#000000';
+        style.height = '90%';
+      }
+
+      return style;
+    },
+    //moves the pieces 
+    moveIcons(fen) {
+      const piecePlacement = fen.split(' ')[0];
+      const rows = piecePlacement.split('/');
+
+      for (let row = 0; row < rows.length; row++) {
+        let col = 1;
+
+        for (let i = 0; i < rows[row].length; i++) {
+          const char = rows[row][i];
+
+          if (isNaN(char)) {
+            const square = this.translateToChessId(8 - row, col);
+            const iconElement = document.getElementById(square)?.querySelector('svg');
+
+            if (iconElement) {
+          // Set the piece icon based on the FEN notation
+          if (char === "p") {
+            iconElement.setAttribute("icon", ['fass', 'chess-pawn']);
+            iconElement.style.color = "#000000";
+          } else if (char === "P") {
+            iconElement.setAttribute("icon", ['fass', 'chess-pawn']);
+            iconElement.style.color = "#ffffff";
+          } else if (char === "r") {
+            iconElement.setAttribute("icon", ['fass', 'chess-rook']);
+            iconElement.style.color = "#000000";
+          } else if (char === "R") {
+            iconElement.setAttribute("icon", ['fass', 'chess-rook']);
+            iconElement.style.color = "#ffffff";
+          } else if (char === "n") {
+            iconElement.setAttribute("icon", ['fass', 'chess-knight']);
+            iconElement.style.color = "#000000";
+          } else if (char === "N") {
+            iconElement.setAttribute("icon", ['fass', 'chess-knight']);
+            iconElement.style.color = "#ffffff";
+          } else if (char === "b") {
+            iconElement.setAttribute("icon", ['fass', 'chess-bishop']);
+            iconElement.style.color = "#000000";
+          } else if (char === "B") {
+            iconElement.setAttribute("icon", ['fass', 'chess-bishop']);
+            iconElement.style.color = "#ffffff";
+          } else if (char === "q") {
+            iconElement.setAttribute("icon", ['fass', 'chess-queen']);
+            iconElement.style.color = "#000000";
+          } else if (char === "Q") {
+            iconElement.setAttribute("icon", ['fass', 'chess-queen']);
+            iconElement.style.color = "#ffffff";
+          } else if (char === "k") {
+            iconElement.setAttribute("icon", ['fass', 'chess-king']);
+            iconElement.style.color = "#000000";
+          } else if (char === "K") {
+            iconElement.setAttribute("icon", ['fass', 'chess-king']);
+            iconElement.style.color = "#ffffff";
+          }
+        }
+            col++;
+          } else {
+            col += parseInt(char);
+          }
+        }
       }
     },
-    mounted() {
+  },
+};
+</script>
 
-    console.log(game.ascii());
-
-    },
-    methods: {
-      getSquareClass(row, col) {
-        return (row + col) % 2 === 0 ? 'square white' : 'square black';
-      },
-      isSelected(row, col) {
-        return `${row}-${col}` === this.selectedSquare;
-      },
-      selectSquare(row, col) {
-        var piece = translateToChessId(row, col);
-        highlightTiles(row + '-' + col, piece);
-      }      
-    },
-  };
-  </script>
-  
-  <style scoped>
+<style scoped>
   .chessboard {
     display: flex;
     flex-wrap: wrap;
     width: 600px;
     height: 600px;
   }
-  
-  .row {
+
+.row {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
     height: 75px;
   }
-  
-  .square {
+
+.square {
     width: 75px;
     height: 75px;
     display: flex;
     justify-content: center;
     align-items: center;
   }
-  
-  .white {
-    background-color: #CAD2C5;
-  }
-  
-  .black {
-    background-color: #52796F;
-  }
-  
-  .selected {
-    background-color: #354F52;
-  }
-  .icon{
-    width: 100%;
-    height: 100%;
-    
-  }
-  </style>
-  
+
+.square.white {
+  background-color:  #CAD2C5;;
+}
+
+.square.black {
+  background-color: #52796F;;
+}
+
+.selected {
+  background-color: #354F52;;
+}
+</style>
