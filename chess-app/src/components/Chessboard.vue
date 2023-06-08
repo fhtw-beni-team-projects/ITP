@@ -54,7 +54,7 @@ export default {
           const temp = this.reverseTranslation(move.to);
           const tile = document.getElementById(temp);
           if (tile) {
-            tile.style.backgroundColor = '#000000';
+            tile.style.backgroundColor = '#999999';
             tile.addEventListener('click', this.moveChessPiece);
           }
         }
@@ -75,7 +75,7 @@ export default {
 
       if (game.isCheckmate()) {
         console.log('Checkmate!');
-      } else if (game.in_check()) {
+      } else if (game.inCheck()) {
         console.log('Check!');
       }
     },
@@ -133,6 +133,8 @@ export default {
       if (piece) {
         style.color = piece.color === 'w' ? '#ffffff' : '#000000';
         style.height = '90%';
+        style.pointerEvents = 'none';
+        style.zIndex = '2';
       }
 
       return style;
@@ -189,7 +191,7 @@ export default {
             iconElement.style.color = "#000000";
           } else if (char === "K") {
             iconElement.setAttribute("icon", ['fass', 'chess-king']);
-            iconElement.style.color = "#ffffff";
+            iconElement.style.color = "#ffffff"; 
           }
         }
             col++;
@@ -224,6 +226,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1;
   }
 
 .square.white {
