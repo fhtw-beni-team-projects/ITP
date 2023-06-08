@@ -36,6 +36,11 @@ export default {
 </script>
 
 <style>
+  #app {
+    display: flex;
+    justify-content: center;
+  }
+
   .menu {
   display: flex;
   flex-direction: column;

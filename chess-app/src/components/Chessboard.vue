@@ -10,10 +10,15 @@
       </div>
     </div>
   </div>
+  <div>
+    <PromotionComponent :is-open="showPopup" @promote="handlePromotion" />
+  </div>
+
 </template>
 
 <script>
 import { Chess } from 'chess.js';
+import PromotionComponent from './popups/PromotionComponent.vue';
 
 var greyTiles = [];
 const game = new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
@@ -22,8 +27,12 @@ export default {
   name: 'ChessBoard',
   data() {
     return {
-       game,
-      selectedSquare: '',
+        game,
+        selectedSquare: '',
+        showPopup: false,
+        promotionType: null,
+        promotionFrom: null,
+        promotionTo: null,
     };
   },
   mounted() {
@@ -31,6 +40,18 @@ export default {
     this.moveIcons(this.game.fen());
   },
   methods: {
+    openPopup(from, to) {
+      this.showPopup = true;
+      this.promotionFrom = from;
+      this.promotionTo = to;
+    },
+    async handlePromotion(pieceType) {
+      //console.log('Selected type: ', pieceType);
+      this.promotionType = pieceType;
+      this.showPopup = false;
+
+      this.game.move({ from: this.promotionFrom, to: this.promotionTo, promotion: this.promotionType });
+    },
     getSquareClass(row, col) {
       return (row + col) % 2 === 0 ? 'square white' : 'square black';
     },
@@ -66,6 +87,16 @@ export default {
       const moveTo = this.translateToChessId(newTile[0], newTile[2]);
       const { game } = this;
 
+      const pieceType = game.get(this.selectedSquare).type;
+      var moveToRow = newTile.split('-');
+      moveToRow = moveToRow[0];
+
+      if(pieceType == 'p') 
+        if(moveToRow == 1 || moveToRow == 8) {
+          this.openPopup(this.selectedSquare, moveTo);
+          return;
+        }
+      
       game.move({ from: this.selectedSquare, to: moveTo });
 
       console.log(game.ascii());
@@ -202,6 +233,9 @@ export default {
       }
     },
   },
+  components: {
+    PromotionComponent,
+  }
 };
 </script>
 
@@ -210,7 +244,9 @@ export default {
     display: flex;
     flex-wrap: wrap;
     width: 600px;
+    min-width: 600px;
     height: 600px;
+    justify-content: center;
   }
 
 .row {
