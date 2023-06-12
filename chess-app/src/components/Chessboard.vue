@@ -106,7 +106,11 @@ export default {
 
       if (game.isCheckmate()) {
         console.log('Checkmate!');
-      } else if (game.inCheck()) {
+      } else if (game.isGameOver())
+      {
+        console.log("Draw!");
+      }  
+      else if (game.inCheck()) {
         console.log('Check!');
       }
     },
