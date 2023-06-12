@@ -121,6 +121,8 @@ export default {
       if (game.isCheckmate()) {
         console.log('Checkmate!');
         this.showCheckmate = true;
+      } else if (game.isGameOver) {
+        console.log('Draw!');
       } else if (game.inCheck()) {
         console.log('Check!');
         this.showCheck=true;
