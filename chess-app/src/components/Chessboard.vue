@@ -89,7 +89,8 @@ export default {
           const temp = this.reverseTranslation(move.to);
           const tile = document.getElementById(temp);
           if (tile) {
-            tile.style.backgroundColor = '#999999';
+            tile.style.boxShadow = '0 0 5px rgba(0, 180, 180, 0.8), 0 0 10px rgba(0, 180, 180, 0.8), 0 0 15px rgba(0, 180, 180, 0.8), 0 0 20px rgba(0, 180, 180, 0.8)';
+        tile.style.border = '3px solid #02cccc';
             tile.addEventListener('click', this.moveChessPiece);
           }
         }
@@ -264,23 +265,33 @@ export default {
 </script>
 
 <style scoped>
-.popup{
+.popup {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
- 
   padding: 20px;
-  border: 1px solid black;
+  border: 3px solid #02cccc;
+  box-shadow: 0 0 10px rgba(0, 180, 180, 0.6);
   z-index: 9999;
 }
+
 .popup-content {
   text-align: center;
 }
-
 .popup button {
   margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #02cccc;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
 }
+.popup button:hover {
+  background-color: #00e6e6;
+}
+
   .chessboard {
     display: flex;
     flex-wrap: wrap;
@@ -307,14 +318,12 @@ export default {
   }
 
 .square.white {
-  background-color:  #CAD2C5;;
+ 
+  background-color: rgb(224, 229, 237);
 }
 
 .square.black {
-  background-color: #52796F;;
+  background-color: #4ab0d5bb
 }
 
-.selected {
-  background-color: #354F52;;
-}
 </style>
