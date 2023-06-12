@@ -6,6 +6,7 @@
     "src/**/*.vue"
   ],
   "compilerOptions": {
+    "lib": ["WebWorker", "ES2015"],
     "baseUrl": ".",
     "paths": {
       "@/*": [
