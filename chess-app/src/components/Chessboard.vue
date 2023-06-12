@@ -10,7 +10,19 @@
       </div>
     </div>
   </div>
-  <div>
+  <div v-if="showCheckmate" class="popup">
+      <div class="popup-content">
+        <h2>Checkmate!</h2>
+        <button @click="dismissCheckmate">Close</button>
+      </div>
+    </div>
+    <div v-if="showCheck" class="popup">
+      <div class="popup-content">
+        <h2>Check!</h2>
+        <button @click="dismissCheck">Close</button>
+      </div>
+    </div>
+    <div>
     <PromotionComponent :is-open="showPopup" @promote="handlePromotion" />
   </div>
 
@@ -33,6 +45,8 @@ export default {
         promotionType: null,
         promotionFrom: null,
         promotionTo: null,
+        showCheckmate: false,
+        showCheck: false
     };
   },
   mounted() {
@@ -106,14 +120,20 @@ export default {
 
       if (game.isCheckmate()) {
         console.log('Checkmate!');
-      } else if (game.isGameOver())
-      {
-        console.log("Draw!");
-      }  
-      else if (game.inCheck()) {
+        this.showCheckmate = true;
+      } else if (game.inCheck()) {
         console.log('Check!');
+        this.showCheck=true;
       }
     },
+    dismissCheckmate(){
+      this.showCheckmate = false;
+    },
+
+    dismissCheck(){
+      this.showCheck = false;
+    },
+
     removeHighlightedTile() {
       const tiles = document.getElementsByClassName('square');
       for (const tile of tiles) {
@@ -244,6 +264,23 @@ export default {
 </script>
 
 <style scoped>
+.popup{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+ 
+  padding: 20px;
+  border: 1px solid black;
+  z-index: 9999;
+}
+.popup-content {
+  text-align: center;
+}
+
+.popup button {
+  margin-top: 10px;
+}
   .chessboard {
     display: flex;
     flex-wrap: wrap;
