@@ -22,6 +22,10 @@
     },
     methods: {
       selectPromotion(pieceType) {
+        if(pieceType == "Knight") {
+          this.$emit('promote', 'n');
+          return;
+        }
         // Emit an event with the selected piece type
         var promoteType = pieceType.charAt(0).toLowerCase();
         //console.log(promoteType);
