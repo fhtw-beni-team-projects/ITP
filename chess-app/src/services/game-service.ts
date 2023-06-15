@@ -1,5 +1,5 @@
 export type State = "pending" | "running" | "end white" | "end black" | "end draw" | "invalid"
-export type Player = "black" | "white"
+export type Player = "black" | "white" | "viewer"
 
 export type GameState = {
     gameId: string
