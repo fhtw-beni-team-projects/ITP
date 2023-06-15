@@ -25,7 +25,7 @@ class GameState {
 class PlayerState {
     static BLACK = "black"
     static WHITE = "white"
-    static INVALID = "invalid"
+    static VIEWER = "viewer"
 
     constructor(time /* in seconds */) {
         this.time = time

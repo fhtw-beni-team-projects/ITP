@@ -30,7 +30,7 @@ class GameService {
     join(gameId) {
         // Return either white or black, this will let the user know which color they are
         if (this.games[gameId].black_joined == true && this.games[gameId].white_joined == true) {
-            return PlayerState.INVALID
+            return PlayerState.VIEWER
         }
 
         var color;
