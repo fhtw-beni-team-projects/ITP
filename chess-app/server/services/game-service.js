@@ -59,7 +59,7 @@ class GameService {
 
         if ((Date.now() - game.last_time) > game.time[game.game.turn()]) {
             this.games[gameId].state = "concluded"
-            this.games[gameId].stateObj = game.game.turn() == 'w' ? GameState.BlackWon(this.#getPlayerStates(gameId), players, this.#getBoard(gameId)) : GameState.WhiteWon(this.#getPlayerStates(gameId), players, this.#getBoard(gameId))
+            this.games[gameId].stateObj = game.game.turn() == 'w' ? GameState.BlackWon(this.#getPlayerStates(gameId), players, this.#getBoard(gameId), this.#getLastMove(gameId)) : GameState.WhiteWon(this.#getPlayerStates(gameId), players, this.#getBoard(gameId), this.#getLastMove(gameId))
             return this.games[gameId].stateObj
         }
 
@@ -67,32 +67,34 @@ class GameService {
 
         const players = this.#getPlayerStates(gameId)
         const board = this.#getBoard(gameId)
+        const last_move = this.#getLastMove(gameId)
 
         if (this.games[gameId].isCheckmate()) {
             this.games[gameId].state = "concluded"
-            this.games[gameId].stateObj = this.games[gameId].turn() == 'w' ? GameState.BlackWon(gameId, players, board) : GameState.WhiteWon(gameId, players, board)
+            this.games[gameId].stateObj = this.games[gameId].turn() == 'w' ? GameState.BlackWon(gameId, players, board, last_move) : GameState.WhiteWon(gameId, players, board, last_move)
             return this.games[gameId].stateObj
         }
         if (this.games[gameId].isDraw()) {
             this.games[gameId].state = "concluded"
-            this.games[gameId].stateObj = GameState.Draw(gameId, players, board)
+            this.games[gameId].stateObj = GameState.Draw(gameId, players, board, last_move)
             return this.games[gameId].stateObj
         }
 
-        return GameState.Running(gameId, players, board)
+        return GameState.Running(gameId, players, board, last_move)
     }
 
     surrender(gameId, who) {        
         const players = this.#getPlayerStates(gameId)
         const board = this.#getBoard(gameId)
+        const last_move = this.#getLastMove(gameId)
 
         switch (who) {
             case PlayerState.WHITE:
-                return GameState.WhiteWon(gameId, players, board)
+                return GameState.WhiteWon(gameId, players, board, last_move)
             case PlayerState.BLACK:
-                return GameState.BlackWon(gameId, players, board)
+                return GameState.BlackWon(gameId, players, board, last_move)
             default:
-                return GameState.Invalid(gameId, players, board)
+                return GameState.Invalid(gameId, players, board, last_move)
         }
     }
 
@@ -102,8 +104,13 @@ class GameService {
             black: new PlayerState(this.games[gameId].getSecondsBlack())
         }
     }
+
     #getBoard(gameId) {
         return this.games[gameId].game.fen();
+    }
+
+    #getLastMove(gameId) {
+        return this.games[gameId].last_move;
     }
 }
 

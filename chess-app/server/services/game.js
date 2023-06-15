@@ -16,6 +16,8 @@ class Game
 		}
 		this.increment = increment * 1000;
 		this.game = new Chess(fen);
+
+		this.last_move = ''
 	}
 
 	startTimer() {
@@ -28,6 +30,7 @@ class Game
 			var result = this.game.move(san)
 			this.time[result.color] -= (Date.now() - this.timestamp)
 			this.timestamp = Date.now();
+			this.last_move = san
 		} catch (err) {
 			return false
 		}
