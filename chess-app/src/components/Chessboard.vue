@@ -107,7 +107,7 @@ export default {
       const { game } = this;
       const piece = game.get(chessId);
 
-      if (piece && piece.color === game.turn()) {
+      if (this.player.at(0) == game.turn() && piece && piece.color === game.turn()) {
         this.removeHighlightedTile(greyTiles);
         const possibleMoves = game.moves({ square: chessId, verbose: true });
 
