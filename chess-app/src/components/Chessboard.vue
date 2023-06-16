@@ -174,7 +174,8 @@ export default {
     removeHighlightedTile() {
       const tiles = document.getElementsByClassName('square');
       for (const tile of tiles) {
-        tile.removeAttribute('style');
+        tile.style.removeProperty('box-shadow');
+        tile.style.removeProperty('border');
         tile.removeEventListener('click', this.moveUserInput);
       }
     },
