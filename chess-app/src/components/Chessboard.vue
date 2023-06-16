@@ -31,12 +31,23 @@
 <script>
 import { Chess } from 'chess.js';
 import PromotionComponent from './popups/PromotionComponent.vue';
+import { GameService } from '../services/game-service'
 
 var greyTiles = [];
 const game = new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
 export default {
   name: 'ChessBoard',
+  props: {
+    gameId: {
+      type: String,
+      required: true
+    },
+    player: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
         game,
@@ -50,10 +61,26 @@ export default {
     };
   },
   mounted() {
-    console.log(game.ascii());
-    this.moveIcons(this.game.fen());
+    this.gameService = new GameService(this.gameId, this.player, this.handleUpdate)
+    // console.log(game.ascii());
   },
   methods: {
+    handleUpdate(GameState) {
+      // todo: which player can move
+      // TODO: validation did the board change?
+      const { game } = this
+      const remote_game = new Chess(GameState.board)
+
+      if (this.last_move == GameState.last_move) {
+        game.undo()
+        return
+      }
+
+      this.last_move = game.history().at(-1)
+
+      if (game.history().at(-1) != GameState.last_move)
+        this.moveChessPiece(GameState.last_move)
+    },
     openPopup(from, to) {
       this.showPopup = true;
       this.promotionFrom = from;
@@ -90,14 +117,14 @@ export default {
           const tile = document.getElementById(temp);
           if (tile) {
             tile.style.boxShadow = '0 0 5px rgba(0, 180, 180, 0.8), 0 0 10px rgba(0, 180, 180, 0.8), 0 0 15px rgba(0, 180, 180, 0.8), 0 0 20px rgba(0, 180, 180, 0.8)';
-        tile.style.border = '3px solid #02cccc';
-            tile.addEventListener('click', this.moveChessPiece);
+            tile.style.border = '3px solid #02cccc';
+            tile.addEventListener('click', this.moveUserInput);
           }
         }
         this.selectedSquare = chessId;
       }
     },
-    moveChessPiece(event) {
+    moveUserInput(event) {
       const newTile = event.target.id;
       const moveTo = this.translateToChessId(newTile[0], newTile[2]);
       const { game } = this;
@@ -111,18 +138,24 @@ export default {
           this.openPopup(this.selectedSquare, moveTo);
           return;
         }
-      
-      game.move({ from: this.selectedSquare, to: moveTo });
 
-      console.log(game.ascii());
+      this.moveChessPiece({ from: this.selectedSquare, to: moveTo });
+
+      this.gameService.move(game.history().at(-1))
 
       this.selectedSquare = '';
-      this.removeHighlightedTile();
+      this.removeHighlightedTile();   
+    },
+    moveChessPiece(move) {
+      
+      game.move(move);
+
+      console.log(game.ascii());
 
       if (game.isCheckmate()) {
         console.log('Checkmate!');
         this.showCheckmate = true;
-      } else if (game.isGameOver) {
+      } else if (game.isGameOver()) {
         console.log('Draw!');
       } else if (game.inCheck()) {
         console.log('Check!');
@@ -141,7 +174,7 @@ export default {
       const tiles = document.getElementsByClassName('square');
       for (const tile of tiles) {
         tile.removeAttribute('style');
-        tile.removeEventListener('click', this.moveChessPiece);
+        tile.removeEventListener('click', this.moveUserInput);
       }
     },
     reverseTranslation(chessTile) {
@@ -199,6 +232,7 @@ export default {
     },
     //moves the pieces 
     moveIcons(fen) {
+      console.log(fen)
       const piecePlacement = fen.split(' ')[0];
       const rows = piecePlacement.split('/');
 

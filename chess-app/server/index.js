@@ -41,12 +41,25 @@ app.get('/games/:gameId/join', (req, res) => {
 
 
 // Websocket
+const clients = [];
 wss.on('connection', function (ws) {
-    ws.on('message', (buffer) => {
-        const data = JSON.parse(buffer.toString())
-        const gameState = processMessage(data)
+    clients.push(ws);
 
-        ws.send(JSON.stringify(gameState))
+    ws.on('message', (buffer) => {
+        const data = JSON.parse(buffer.toString());
+        const gameState = processMessage(data);
+        console.log(data);
+
+        clients.forEach(client => {
+            client.send(JSON.stringify(gameState));
+        });
+    });
+
+    ws.on('close', () => {
+        const index = clients.indexOf(ws);
+        if (index > -1) {
+            clients.splice(index, 1);
+        }
     });
 })
 

@@ -1,16 +1,18 @@
 <template>
   <div id="app">
     <div v-if="!showChessboard" class="menu">
-      <button class="menu-button" @click="showChessboard = true">New Game</button>
-      <button class="menu-button" @click="showChessboard = true">Join Game</button>
+      <button class="menu-button" @click="createNewGame()">New Game</button>
+      <button class="menu-button" @click="showChessboard = true">//Join Game</button>
     </div>
-    <Chessboard v-else/>
+    <Chessboard v-else :gameId="gameId" :player="player"/>
   </div>
 </template>
 
 <script>
 import Chessboard from './components/Chessboard.vue';
 import { Chess } from 'chess.js'
+import { GameService } from './services/game-service'
+import { HttpService } from './services/http-service'
 
 export default {
   name: 'App',
@@ -20,15 +22,22 @@ export default {
   data() {
     return {
       showChessboard: false,
+      gameId: this.gameId,
+      player: this.player,
     };
   },
   methods: {
-    createNewGame() {
-      // Code to start a new game goes here
+    async createNewGame() {
+      this.gameId = await HttpService.createGameAsync();
+      this.player = await HttpService.joinGameAsync(this.gameId);
+
+      this.showChessboard = true
       this.gameStarted = true;
     },
-    joinGame() {
-      // Code to join an existing game goes here
+    async joinGame(gameId) {
+      this.player = await HttpService.joinGameAsync(gameId);
+
+      this.showChessboard = true
       this.gameStarted = true;
     },
   }

@@ -1,5 +1,5 @@
 export type State = "pending" | "running" | "end white" | "end black" | "end draw" | "invalid"
-export type Player = "black" | "white" | "viewer"
+export type PlayerState = "black" | "white" | "viewer"
 
 export type GameState = {
     gameId: string
@@ -13,18 +13,20 @@ export type GameState = {
         }
     }
     board: string
+    last_move: string
 }
 
 
 export class GameService {
     private webSocket: WebSocket = new WebSocket("ws://localhost:3000")
-    constructor(private gameId: string, private who: Player, private callback?: (state: GameState) => void) {
+    constructor(private gameId: string, private who: PlayerState, private callback?: (state: GameState) => void) {
         this.webSocket.addEventListener('message', (ev) => this.receivedMessage(ev))
     }
 
     move(move: string) {
         const data = {
             ...this.getBaseData(),
+            method: 'move',
             data: move
         }
 
@@ -41,7 +43,7 @@ export class GameService {
 
     private receivedMessage(data: MessageEvent) {
         if (this.callback) {
-            this.callback(data.data as GameState)
+            this.callback(JSON.parse(data.data) as GameState)
         }
     }
     
