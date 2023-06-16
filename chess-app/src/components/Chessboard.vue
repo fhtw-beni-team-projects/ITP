@@ -68,17 +68,16 @@ export default {
     handleUpdate(GameState) {
       // todo: which player can move
       // TODO: validation did the board change?
-      const { game } = this
       const remote_game = new Chess(GameState.board)
 
       if (this.last_move == GameState.last_move) {
-        game.undo()
+        this.game.undo()
         return
       }
 
       this.last_move = game.history().at(-1)
 
-      if (game.history().at(-1) != GameState.last_move)
+      if (this.game.history().at(-1) != GameState.last_move)
         this.moveChessPiece(GameState.last_move)
     },
     openPopup(from, to) {
@@ -148,7 +147,7 @@ export default {
     },
     moveChessPiece(move) {
       
-      game.move(move);
+      this.game.move(move);
 
       console.log(game.ascii());
 
