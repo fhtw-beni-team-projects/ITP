@@ -1,10 +1,12 @@
 <template>
-  <div class="chessboard">
+  <div class="chessboard"
+    :style="{ transform: this.player === 'black' ? 'rotate(180deg)' : 'none' }">
     <div v-for="row in 8" class="row" :key="row">
       <div v-for="col in 8" 
         :class="getSquareClass(9 - row, col) + (isSelected(9 - row, col) ? ' selected' : '')" 
         :key="`${9 - row}${col}`"
         :id="`${9 - row}-${col}`"
+        :style="{ transform: this.player === 'black' ? 'rotate(180deg)' : 'none' }"
         @click="selectSquare(`${9 - row}`, `${col}`)">
         <font-awesome-icon v-if="getPieceIcon(9 - row, col)" :icon="getPieceIcon(9 - row, col)" :style="getPieceStyle(9 - row, col)" />
       </div>
@@ -93,7 +95,7 @@ export default {
       this.game.move({ from: this.promotionFrom, to: this.promotionTo, promotion: this.promotionType });
     },
     getSquareClass(row, col) {
-      return (row + col) % 2 === 0 ? 'square white' : 'square black';
+      return (row + col) % 2 === 0 ? 'square black' : 'square white';
     },
     isSelected(row, col) {
       return `${row}-${col}` === this.selectedSquare;
