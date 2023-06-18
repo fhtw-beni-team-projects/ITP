@@ -43,7 +43,10 @@ export class GameService {
 
     private receivedMessage(data: MessageEvent) {
         if (this.callback) {
-            this.callback(JSON.parse(data.data) as GameState)
+            let gameData = JSON.parse(data.data)
+            if (this.gameId == gameData.gameId) {
+                this.callback(gameData as GameState)
+            }
         }
     }
     
