@@ -3,7 +3,7 @@
     <div v-if="!showChessboard" class="menu">
       <button class="menu-button" @click="createNewGame()">New Game</button>
       <button class="menu-button" @click="openJoinGamePopup()">Join Game</button>
-      <JoinGamePopup ref="joinRef" @gameIdEntered="handleGameIdEntered"/>
+      <JoinGamePopup ref="joinRef" @gameIdEntered="joinGame"/>
     </div>
     <Chessboard v-else :gameId="gameId" :player="player"/>
   </div>
