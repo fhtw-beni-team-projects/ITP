@@ -2,7 +2,8 @@
   <div id="app">
     <div v-if="!showChessboard" class="menu">
       <button class="menu-button" @click="createNewGame()">New Game</button>
-      <button class="menu-button" @click="showChessboard = true">//Join Game</button>
+      <button class="menu-button" @click="openJoinGamePopup()">Join Game</button>
+      <JoinGamePopup ref="joinRef" @gameIdEntered="handleGameIdEntered"/>
     </div>
     <Chessboard v-else :gameId="gameId" :player="player"/>
   </div>
@@ -14,10 +15,13 @@ import { Chess } from 'chess.js'
 import { GameService } from './services/game-service'
 import { HttpService } from './services/http-service'
 
+import JoinGamePopup from './components/popups/JoinGamePopup.vue'
+
 export default {
   name: 'App',
   components: {
     Chessboard,
+    JoinGamePopup,
   },
   data() {
     return {
@@ -34,11 +38,15 @@ export default {
       this.showChessboard = true
       this.gameStarted = true;
     },
-    async joinGame(gameId) {
-      this.player = await HttpService.joinGameAsync(gameId);
+    async joinGame(gameIdEntered) {
+      this.gameId = gameIdEntered;
+      this.player = await HttpService.joinGameAsync(gameIdEntered);
 
       this.showChessboard = true
       this.gameStarted = true;
+    },
+    openJoinGamePopup() {
+      this.$refs.joinRef.isOpen = true;;
     },
   }
 };
