@@ -12,6 +12,9 @@
       </div>
     </div>
   </div>
+  <div>
+    <p class="gameId-display">{{ gameId }}</p>
+  </div>
   <div v-if="showCheckmate" class="popup">
       <div class="popup-content">
         <h2>Checkmate!</h2>
@@ -362,6 +365,11 @@ export default {
 
 .square.black {
   background-color: #4ab0d5bb
+}
+
+.gameId-display {
+  background-color: white;
+  color: black;
 }
 
 </style>
