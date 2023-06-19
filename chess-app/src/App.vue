@@ -3,7 +3,9 @@
     <div v-if="!showChessboard" class="menu">
       <button class="menu-button" @click="createNewGame()">New Game</button>
       <button class="menu-button" @click="openJoinGamePopup()">Join Game</button>
+      <button class="menu-button" @click="openSpectateGamePopup()">Spectate Game</button>
       <JoinGamePopup ref="joinRef" @gameIdEntered="joinGame"/>
+      <SpectateGamePopup ref="spectateRef" @gameIdEntered="spectateGame"/>
     </div>
     <Chessboard v-else :gameId="gameId" :player="player"/>
   </div>
@@ -16,12 +18,14 @@ import { GameService } from './services/game-service'
 import { HttpService } from './services/http-service'
 
 import JoinGamePopup from './components/popups/JoinGamePopup.vue'
+import SpectateGamePopup from './components/popups/SpectateGamePopup.vue'
 
 export default {
   name: 'App',
   components: {
     Chessboard,
     JoinGamePopup,
+    SpectateGamePopup,
   },
   data() {
     return {
@@ -45,8 +49,18 @@ export default {
       this.showChessboard = true
       this.gameStarted = true;
     },
+    async spectateGame(gameIdEntered) {
+      this.gameId = gameIdEntered;
+      this.player = "viewer"
+
+      this.showChessboard = true
+      this.gameStarted = true;
+    },
     openJoinGamePopup() {
-      this.$refs.joinRef.isOpen = true;;
+      this.$refs.joinRef.isOpen = true;
+    },
+    openSpectateGamePopup() {
+      this.$refs.spectateRef.isOpen = true;
     },
   }
 };
