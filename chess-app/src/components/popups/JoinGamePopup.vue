@@ -21,7 +21,7 @@
         this.isOpen = true;
       },
       closeJoinPopup() {
-        console.log("hello")
+
         if(event.target.closest('.popup-content')) return;
 
         this.isOpen = false;
