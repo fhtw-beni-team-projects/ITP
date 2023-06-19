@@ -1,5 +1,5 @@
 <template>
-    <div class="popup-container" v-if="isOpen" @click="closeJoinPopup">
+    <div class="popup-container" v-if="isOpen" @click="closeSpectatePopup">
       <div class="popup-content">
         <h2>Enter Game ID</h2>
         <input type="text" v-model="gameId" placeholder="Game ID" />
@@ -23,7 +23,7 @@
       closeSpectatePopup() {
 
         if(event.target.closest('.popup-content')) return;
-        
+
         this.isOpen = false;
       },
       submitGameId() {
