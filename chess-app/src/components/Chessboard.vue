@@ -253,44 +253,36 @@ export default {
 
             if (iconElement) {
           // Set the piece icon based on the FEN notation
-          if (char === "p") {
-            iconElement.setAttribute("icon", ['fass', 'chess-pawn']);
-            iconElement.style.color = "#000000";
-          } else if (char === "P") {
-            iconElement.setAttribute("icon", ['fass', 'chess-pawn']);
-            iconElement.style.color = "#ffffff";
-          } else if (char === "r") {
-            iconElement.setAttribute("icon", ['fass', 'chess-rook']);
-            iconElement.style.color = "#000000";
-          } else if (char === "R") {
-            iconElement.setAttribute("icon", ['fass', 'chess-rook']);
-            iconElement.style.color = "#ffffff";
-          } else if (char === "n") {
-            iconElement.setAttribute("icon", ['fass', 'chess-knight']);
-            iconElement.style.color = "#000000";
-          } else if (char === "N") {
-            iconElement.setAttribute("icon", ['fass', 'chess-knight']);
-            iconElement.style.color = "#ffffff";
-          } else if (char === "b") {
-            iconElement.setAttribute("icon", ['fass', 'chess-bishop']);
-            iconElement.style.color = "#000000";
-          } else if (char === "B") {
-            iconElement.setAttribute("icon", ['fass', 'chess-bishop']);
-            iconElement.style.color = "#ffffff";
-          } else if (char === "q") {
-            iconElement.setAttribute("icon", ['fass', 'chess-queen']);
-            iconElement.style.color = "#000000";
-          } else if (char === "Q") {
-            iconElement.setAttribute("icon", ['fass', 'chess-queen']);
-            iconElement.style.color = "#ffffff";
-          } else if (char === "k") {
-            iconElement.setAttribute("icon", ['fass', 'chess-king']);
-            iconElement.style.color = "#000000";
-          } else if (char === "K") {
-            iconElement.setAttribute("icon", ['fass', 'chess-king']);
-            iconElement.style.color = "#ffffff"; 
-          }
-        }
+              var piece;
+              switch (char.toLower()) {
+              case "p":
+                piece = "chess-pawn";
+                break;
+              case "r":
+                piece = "chess-rook";
+                break;
+              case "n":
+                piece = "chess-knight";
+                break;
+              case "b":
+                piece = "chess-bishop";
+                break;
+              case "q":
+                piece = "chess-queen";
+                break;
+              case "k":
+                piece = "chess-king";
+                break;
+              }
+
+              iconElement.setAttribute("icon", ['fass', piece]);
+
+
+              iconElement.style.color = "#ffffff";
+              if (char.toLower() === char) {
+                iconElement.style.color = "#000000";
+              }
+            }
             col++;
           } else {
             col += parseInt(char);
