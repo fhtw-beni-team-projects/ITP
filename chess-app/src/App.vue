@@ -1,5 +1,6 @@
 <template>
-  <div id="app">
+  <!--<div id="app">-->
+    <div class="container">
     <div v-if="!showChessboard" class="menu">
       <button class="menu-button" @click="createNewGame()">New Game</button>
       <button class="menu-button" @click="openJoinGamePopup()">Join Game</button>
@@ -8,8 +9,10 @@
       <SpectateGamePopup ref="spectateRef" @gameIdEntered="spectateGame"/>
     </div>
     <Chessboard v-else :gameId="gameId" :player="player"/>
-  </div>
-</template>
+    </div>
+    
+  <!---</div>-->
+  </template>
 
 <script>
 import Chessboard from './components/Chessboard.vue';
@@ -19,6 +22,7 @@ import { HttpService } from './services/http-service'
 
 import JoinGamePopup from './components/popups/JoinGamePopup.vue'
 import SpectateGamePopup from './components/popups/SpectateGamePopup.vue'
+
 
 export default {
   name: 'App',
@@ -32,8 +36,10 @@ export default {
       showChessboard: false,
       gameId: this.gameId,
       player: this.player,
+    
     };
   },
+  
   methods: {
     async createNewGame() {
       this.gameId = await HttpService.createGameAsync();
@@ -62,42 +68,41 @@ export default {
     openSpectateGamePopup() {
       this.$refs.spectateRef.isOpen = true;
     },
+ 
   }
-};
+}
 </script>
 
 <style>
-  #app {
-    display: flex;
-    justify-content: center;
-  }
+.container {
+  display: flex;
+  justify-content: center;
+  margin-top: 150px;
+  height: 100vh;
+}
 
-  .menu {
+.menu {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   text-align: center;
   margin-top: 50px;
 }
 
 .menu-button {
-  background-color: #84A98C;
-  color: white;
+  background-color: #4ab0d5bb;
   border: none;
-  padding: 15px 25px;
-  
+  color: white;
+  padding: 20px 30px;
   margin: 10px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 1.5rem;
-  box-shadow: 0px 3px 0px rgba(0, 0, 0, 0.3);
-  transition: background-color 0.2s ease-in-out;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 300px;
+  box-sizing: border-box;
+  font-size: 28px;
 }
-
 .menu-button:hover {
-  background-color: #52796F;
-  box-shadow: 0px 6px 0px rgba(0, 0, 0, 0.3);
+  background-color: #02cccc;
+  box-shadow: 0 0 10px rgba(0, 180, 180, 0.6);
 }
 </style>
-
