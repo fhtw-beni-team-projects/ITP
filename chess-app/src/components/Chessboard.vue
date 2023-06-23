@@ -16,11 +16,11 @@
     </div>
   </div>
   <div class="timer-container">
-    <div class="timer1">
-      <span>{{ formatTime(timer.minutes) }}:{{ formatTime(timer.seconds) }}</span>
+    <div :class="{ timer1: this.player !== 'black', timer2: this.player === 'black'}">
+      <span>{{ formatTime(timeBlack) }}</span>
     </div>
-    <div class="timer2">
-      <span>{{ formatTime(timer.minutes) }}:{{ formatTime(timer.seconds) }}</span>
+    <div :class="{ timer1: this.player === 'black', timer2: this.player !== 'black'}">
+      <span>{{ formatTime(timeWhite) }}</span>
     </div>
   </div>
   <div v-if="showCheckmate" class="popup">
@@ -61,28 +61,21 @@ export default {
       type: String,
       required: true
     },
-    //timer
-    countdownDuration: {
-      type: Number,
-      default: 20 
-    }
   },
   data() {
     return {
-        game,
-        selectedSquare: '',
-        showPopup: false,
-        promotionType: null,
-        promotionFrom: null,
-        promotionTo: null,
-        showCheckmate: false,
-        showCheck: false,
-        startTime: null,
-        timerInterval: null,
-        timer: {
-          minutes:this.countdownDuration,
-          seconds:0
-      }
+      game,
+      selectedSquare: '',
+      showPopup: false,
+      promotionType: null,
+      promotionFrom: null,
+      promotionTo: null,
+      showCheckmate: false,
+      showCheck: false,
+      startTime: null,
+      timerInterval: null,
+      timeWhite: null,
+      timeBlack: null
   
     };
   },
@@ -90,37 +83,44 @@ export default {
     this.gameService = new GameService(this.gameId, this.player, this.handleUpdate)
     // console.log(game.ascii());
     this.startTime = Date.now();
-   // this.startTimer();
   },
   beforeMount() {
     clearInterval(this.timerInterval);
   },
   methods: {
-    startTimer() {
-      this.startTime = Math.floor(Date.now() / 1000);
-      this.timerInterval = setInterval(this.updateTimer, 1000);
-    },
-    updateTimer() {
-      const currentTime = Math.floor(Date.now() / 1000);
-      const elapsedTime = currentTime - this.startTime;
-      const remainingSeconds = (this.countdownDuration*60) - elapsedTime;
-
-      if (remainingSeconds > 0) {
-        this.timer.minutes = Math.floor(remainingSeconds / 60);
-        this.timer.seconds = remainingSeconds % 60;
+    startTimer(color) {
+      this.startTime = Math.trunc(Date.now() / 1000);
+      if (color != 'black') {
+        this.timerInterval = setInterval(() => { this.updateTimer('white') }, 1000);
       } else {
-        this.timer.minutes = 0;
-        this.timer.seconds = 0;
+        this.timerInterval = setInterval(() => { this.updateTimer('black') }, 1000);
+      }
+    },
+    updateTimer(color) {
+      if (color != 'black') {
+        this.timeWhite -= 1
+      } else {
+        this.timeBlack -= 1
+      }
+      if ((color != 'black' ? this.timeWhite : this.timeBlack) <= 0) {
         clearInterval(this.timerInterval);
       }
     },
     formatTime(time) {
-      return `${String(time).padStart(2, '0')}`;
+      return time == null ? '--:--' : String(Math.trunc(time / 60)).padStart(2, '0') + ':' + String(time % 60).padStart(2, '0');
     },
     handleUpdate(GameState) {
+      clearInterval(this.timerInterval);
+
       // todo: which player can move
       // TODO: validation did the board change?
       const remote_game = new Chess(GameState.board)
+
+      this.timeWhite = GameState.players.white.time
+      this.timeBlack = GameState.players.black.time
+
+      this.startTimer(remote_game.turn() == 'w' ? 'white' : 'black')
+
       if (this.last_move == GameState.last_move) {
         this.game.undo()
         return
