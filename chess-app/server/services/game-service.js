@@ -44,15 +44,16 @@ class GameService {
             color = PlayerState.BLACK
         }
 
-        if (this.games[gameId].black_joined == true && this.games[gameId].white_joined == true) {
-            this.games[gameId].startTimer()
-        }
-
         return color
     }
 
     move(gameId, who, move /* in SAN notation */) {
         let game = this.games[gameId];
+
+        if (this.games[gameId].state == "pending") {
+            this.games[gameId].startTimer();
+        }
+
         if (this.games[gameId].state == "concluded") {
             return this.games[gameId].stateObj
         }
