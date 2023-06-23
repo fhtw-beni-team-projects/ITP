@@ -1,4 +1,7 @@
 <template>
+    <div>
+    <p class="gameId-display">Game ID: {{ gameId }}</p>
+  </div>
   <div class="chessboard"
     :style="{ transform: this.player === 'black' ? 'rotate(180deg)' : 'none' }">
     <div v-for="row in 8" class="row" :key="row">
@@ -12,8 +15,13 @@
       </div>
     </div>
   </div>
-  <div>
-    <p class="gameId-display">{{ gameId }}</p>
+  <div class="timer-container">
+    <div class="timer1">
+      <span>{{ formatTime(timer.minutes) }}:{{ formatTime(timer.seconds) }}</span>
+    </div>
+    <div class="timer2">
+      <span>{{ formatTime(timer.minutes) }}:{{ formatTime(timer.seconds) }}</span>
+    </div>
   </div>
   <div v-if="showCheckmate" class="popup">
       <div class="popup-content">
@@ -41,6 +49,7 @@ import { GameService } from '../services/game-service'
 var greyTiles = [];
 const game = new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
+
 export default {
   name: 'ChessBoard',
   props: {
@@ -51,6 +60,11 @@ export default {
     player: {
       type: String,
       required: true
+    },
+    //timer
+    countdownDuration: {
+      type: Number,
+      default: 20 
     }
   },
   data() {
@@ -62,26 +76,56 @@ export default {
         promotionFrom: null,
         promotionTo: null,
         showCheckmate: false,
-        showCheck: false
+        showCheck: false,
+        startTime: null,
+        timerInterval: null,
+        timer: {
+          minutes:this.countdownDuration,
+          seconds:0
+      }
+  
     };
   },
   mounted() {
     this.gameService = new GameService(this.gameId, this.player, this.handleUpdate)
     // console.log(game.ascii());
+    this.startTime = Date.now();
+   // this.startTimer();
+  },
+  beforeMount() {
+    clearInterval(this.timerInterval);
   },
   methods: {
+    startTimer() {
+      this.startTime = Math.floor(Date.now() / 1000);
+      this.timerInterval = setInterval(this.updateTimer, 1000);
+    },
+    updateTimer() {
+      const currentTime = Math.floor(Date.now() / 1000);
+      const elapsedTime = currentTime - this.startTime;
+      const remainingSeconds = (this.countdownDuration*60) - elapsedTime;
+
+      if (remainingSeconds > 0) {
+        this.timer.minutes = Math.floor(remainingSeconds / 60);
+        this.timer.seconds = remainingSeconds % 60;
+      } else {
+        this.timer.minutes = 0;
+        this.timer.seconds = 0;
+        clearInterval(this.timerInterval);
+      }
+    },
+    formatTime(time) {
+      return `${String(time).padStart(2, '0')}`;
+    },
     handleUpdate(GameState) {
       // todo: which player can move
       // TODO: validation did the board change?
       const remote_game = new Chess(GameState.board)
-
       if (this.last_move == GameState.last_move) {
         this.game.undo()
         return
       }
-
       this.last_move = game.history().at(-1)
-
       if (this.game.history().at(-1) != GameState.last_move)
         this.moveChessPiece(GameState.last_move)
     },
@@ -298,6 +342,7 @@ export default {
 </script>
 
 <style scoped>
+
 .popup {
   position: fixed;
   top: 50%;
@@ -326,6 +371,7 @@ export default {
 }
 
   .chessboard {
+    margin-top: 5px;
     display: flex;
     flex-wrap: wrap;
     width: 600px;
@@ -351,7 +397,6 @@ export default {
   }
 
 .square.white {
- 
   background-color: rgb(224, 229, 237);
 }
 
@@ -359,9 +404,59 @@ export default {
   background-color: #4ab0d5bb
 }
 
-.gameId-display {
-  background-color: white;
-  color: black;
+.game-id {
+  text-align: center;
+  margin: 0;
+  width: 100%;
 }
 
+  .gameId-display {
+  position: fixed;
+  top: 1%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4ab0d5bb;
+  color: white;
+  padding: 5px 10px;
+  font-size: 28px;
+  border-radius: 10px; 
+  box-shadow: 0 0 10px rgba(0, 180, 180, 0.6); 
+ 
+}
+
+  .timer1{
+  margin-top: 10px;
+  text-align: center;
+  font-size: 24px;
+  height: 50px;
+  width: 90px;
+  background-color: #4ab0d5bb;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 10px; 
+  box-shadow: 0 0 10px rgba(0, 180, 180, 0.6); 
+}
+
+  .timer-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: 300px;
+}
+ 
+ 
+  .timer2 {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    top:73%;
+    text-align: center;
+    font-size: 24px;
+  height: 50px;
+  width: 90px;
+  background-color: #4ab0d5bb;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 10px; 
+  box-shadow: 0 0 10px rgba(0, 180, 180, 0.6); 
+  }
 </style>
