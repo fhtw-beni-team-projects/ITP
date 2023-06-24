@@ -440,7 +440,7 @@ export default {
   .timer-container {
   display: flex;
   justify-content: flex-end;
-  margin-left: 300px;
+  margin-left: 100px;
 }
  
  
