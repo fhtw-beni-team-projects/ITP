@@ -6,7 +6,7 @@
     :style="{ transform: this.player === 'black' ? 'rotate(180deg)' : 'none' }">
     <div v-for="row in 8" class="row" :key="row">
       <div v-for="col in 8" 
-        :class="getSquareClass(9 - row, col) + (isSelected(9 - row, col) ? ' selected' : '')" 
+        :class="getSquareClass(9 - row, col) + (isSelected(9 - row, col) ? ' selected' : '') + (isKingInCheck(9 - row, col) ? ' check' : '')" 
         :key="`${9 - row}${col}`"
         :id="`${9 - row}-${col}`"
         :style="{ transform: this.player === 'black' ? 'rotate(180deg)' : 'none' }"
@@ -162,6 +162,20 @@ export default {
     isSelected(row, col) {
       return `${row}-${col}` === this.selectedSquare;
     },
+    isKingInCheck(row, col) {
+      if (!this.game.isCheck())
+        return false;
+
+      let piece = this.game.get(this.translateToChessId(row, col));
+
+      if (piece.type != 'k')
+        return false
+
+      if (piece.color != this.game.turn())
+        return false
+
+      return true
+    },
     selectSquare(row, col) {
       const piece = this.translateToChessId(row, col);
       this.highlightTiles(row + '-' + col, piece);
@@ -181,6 +195,7 @@ export default {
           if (tile) {
             tile.style.boxShadow = '0 0 5px rgba(0, 180, 180, 0.8), 0 0 10px rgba(0, 180, 180, 0.8), 0 0 15px rgba(0, 180, 180, 0.8), 0 0 20px rgba(0, 180, 180, 0.8)';
             tile.style.border = '3px solid #02cccc';
+            tile.style.filter = 'brightness(125%)';
             tile.addEventListener('click', this.moveUserInput);
           }
         }
@@ -238,6 +253,7 @@ export default {
       for (const tile of tiles) {
         tile.style.removeProperty('box-shadow');
         tile.style.removeProperty('border');
+        tile.style.removeProperty('filter');
         tile.removeEventListener('click', this.moveUserInput);
       }
     },
@@ -415,11 +431,27 @@ export default {
 }
 
 .square.white {
-  background-color: rgb(224, 229, 237);
+  background-color: #9ed0e2ff; /*rgb(224, 229, 237);*/
 }
 
 .square.black {
   background-color: #4ab0d5bb
+}
+
+.square.white.check {
+  background-color: #e07d76ff;
+}
+
+.square.black.check {
+  background-color: #dd5045bb
+}
+
+.square.white.move {
+  background-color: #e9ee27dd;
+}
+
+.square.black.move {
+  background-color: #a6aa25bb
 }
 
 .game-id {
