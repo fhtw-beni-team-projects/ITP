@@ -48,9 +48,14 @@
   }
   
   .popup-content {
-    background-color: white;
+    background-color: #4ab0d5bb;
+    box-shadow: 0 0 10px rgba(0, 180, 180, 0.6); 
+    color: white;
+    font-size: 28px;
     padding: 20px;
     border-radius: 5px;
+    border: 3px solid #02cccc;
+  
   }
   
   input {
@@ -59,5 +64,10 @@
   
   button {
     padding: 5px 10px;
+    border-radius: 10px; 
+    color: gray
+  }
+  button:hover{
+    box-shadow: 0 0 5px rgba(0, 180, 180, 0.8), 0 0 10px rgba(0, 180, 180, 0.8), 0 0 15px rgba(0, 180, 180, 0.8), 0 0 20px rgba(0, 180, 180, 0.8);
   }
   </style>

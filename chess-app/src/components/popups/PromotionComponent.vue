@@ -50,7 +50,11 @@
   }
   
   .popup-content {
-    background-color: rgba(30, 30, 30, 1);
+    background-color: #4ab0d5bb;
+    box-shadow: 0 0 10px rgba(0, 180, 180, 0.6); 
+    border: 3px solid #02cccc;
+    color: white;
+    font-size: 20px;
     padding: 20px;
     border-radius: 8px;
   }
@@ -61,5 +65,11 @@
   
   .popup button {
     margin-right: 10px;
+    padding: 5px 10px;
+    border-radius: 10px; 
+    color: #026666ec;
+  }
+  .popup button:hover{
+    box-shadow: 0 0 5px rgba(0, 180, 180, 0.8), 0 0 10px rgba(0, 180, 180, 0.8), 0 0 15px rgba(0, 180, 180, 0.8), 0 0 20px rgba(0, 180, 180, 0.8);
   }
   </style>
