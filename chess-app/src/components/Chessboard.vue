@@ -1,5 +1,5 @@
 <template>
-    <div>
+  <div>
     <p class="gameId-display">Game ID: {{ gameId }}</p>
   </div>
   <div class="chessboard"
@@ -24,18 +24,12 @@
     </div>
   </div>
   <div v-if="showCheckmate" class="popup">
-      <div class="popup-content">
-        <h2>Checkmate!</h2>
-        <button @click="dismissCheckmate">Close</button>
-      </div>
+    <div class="popup-content">
+      <h2>Checkmate!</h2>
+      <button @click="dismissCheckmate">Close</button>
     </div>
-    <div v-if="showCheck" class="popup">
-      <div class="popup-content">
-        <h2>Check!</h2>
-        <button @click="dismissCheck">Close</button>
-      </div>
-    </div>
-    <div>
+  </div>
+  <div>
     <PromotionComponent :is-open="showPopup" @promote="handlePromotion" />
   </div>
 
@@ -77,7 +71,6 @@ export default {
       },
       move_verify: null,
       showCheckmate: false,
-      showCheck: false,
       startTime: null,
       timerInterval: null,
       timeWhite: null,
@@ -161,7 +154,6 @@ export default {
         console.log('Draw!');
       } else if (game.inCheck()) {
         console.log('Check!');
-        this.showCheck=true;
       }
 
       this.removeHighlightedTile();
@@ -256,10 +248,6 @@ export default {
     },
     dismissCheckmate(){
       this.showCheckmate = false;
-    },
-
-    dismissCheck(){
-      this.showCheck = false;
     },
 
     removeHighlightedTile() {
