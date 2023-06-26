@@ -243,7 +243,6 @@ export default {
         console.log('Draw!');
       } else if (game.inCheck()) {
         console.log('Check!');
-        this.showCheck=true;
       }
     },
     dismissCheckmate(){
