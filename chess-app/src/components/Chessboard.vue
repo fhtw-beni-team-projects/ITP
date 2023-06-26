@@ -250,35 +250,35 @@ export default {
       return letterMap[col - 1] + row;
     },
     getPieceIcon(row, col) {
-  const chessId = this.translateToChessId(row, col);
-  const piece = this.game.get(chessId);
+      const chessId = this.translateToChessId(row, col);
+      const piece = this.game.get(chessId);
 
-  if (piece) {
-    switch (piece.type) {
-      case 'p':
-      case 'P':
-        return ['fass', 'chess-pawn'];
-      case 'r':
-      case 'R':
-        return ['fass', 'chess-rook'];
-      case 'n':
-      case 'N':
-        return ['fass', 'chess-knight'];
-      case 'b':
-      case 'B':
-        return ['fass', 'chess-bishop'];
-      case 'q':
-      case 'Q':
-        return ['fass', 'chess-queen'];
-      case 'k':
-      case 'K':
-        return ['fass', 'chess-king'];
-      default:
-        break;
-    }
-  }
-  return null;
-},
+      if (piece) {
+        switch (piece.type) {
+          case 'p':
+          case 'P':
+            return ['fass', 'chess-pawn'];
+          case 'r':
+          case 'R':
+            return ['fass', 'chess-rook'];
+          case 'n':
+          case 'N':
+            return ['fass', 'chess-knight'];
+          case 'b':
+          case 'B':
+            return ['fass', 'chess-bishop'];
+          case 'q':
+          case 'Q':
+            return ['fass', 'chess-queen'];
+          case 'k':
+          case 'K':
+            return ['fass', 'chess-king'];
+          default:
+            break;
+        }
+      }
+      return null;
+    },
 
     getPieceStyle(row, col) {
       const chessId = this.translateToChessId(row, col);
@@ -311,7 +311,8 @@ export default {
             const iconElement = document.getElementById(square)?.querySelector('svg');
 
             if (iconElement) {
-          // Set the piece icon based on the FEN notation
+              
+              // Set the piece icon based on the FEN notation
               var piece;
               switch (char.toLower()) {
               case "p":
@@ -372,6 +373,7 @@ export default {
 .popup-content {
   text-align: center;
 }
+
 .popup button {
   margin-top: 10px;
   padding: 8px 16px;
@@ -381,35 +383,36 @@ export default {
   font-size: 16px;
   cursor: pointer;
 }
+
 .popup button:hover {
   background-color: #00e6e6;
 }
 
-  .chessboard {
-    margin-top: 5px;
-    display: flex;
-    flex-wrap: wrap;
-    width: 600px;
-    min-width: 600px;
-    height: 600px;
-    justify-content: center;
-  }
+.chessboard {
+  margin-top: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 600px;
+  min-width: 600px;
+  height: 600px;
+  justify-content: center;
+}
 
 .row {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    height: 75px;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 75px;
+}
 
 .square {
-    width: 75px;
-    height: 75px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1;
-  }
+  width: 75px;
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
 
 .square.white {
   background-color: rgb(224, 229, 237);
@@ -425,7 +428,7 @@ export default {
   width: 100%;
 }
 
-  .gameId-display {
+.gameId-display {
   position: fixed;
   top: 1%;
   left: 50%;
@@ -439,8 +442,25 @@ export default {
  
 }
 
-  .timer1{
+.timer-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: 100px;
+}
+ 
+ 
+.timer2 {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  top:73%;
+}
+
+.timer1{
   margin-top: 10px;
+}
+
+.timer1, .timer2 {  
   text-align: center;
   font-size: 24px;
   height: 50px;
@@ -452,26 +472,4 @@ export default {
   box-shadow: 0 0 10px rgba(0, 180, 180, 0.6); 
 }
 
-  .timer-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-left: 100px;
-}
- 
- 
-  .timer2 {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    top:73%;
-    text-align: center;
-    font-size: 24px;
-  height: 50px;
-  width: 90px;
-  background-color: #4ab0d5bb;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 10px; 
-  box-shadow: 0 0 10px rgba(0, 180, 180, 0.6); 
-  }
 </style>

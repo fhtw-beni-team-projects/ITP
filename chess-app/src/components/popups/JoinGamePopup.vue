@@ -48,7 +48,7 @@
   }
   
   .popup-content {
-    background-color: #4ab0d5bb;
+    background-color: #4ab0d5dd;
     box-shadow: 0 0 10px rgba(0, 180, 180, 0.6); 
     color: white;
     font-size: 28px;
