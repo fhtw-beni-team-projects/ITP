@@ -6,7 +6,7 @@
     :style="{ transform: this.player === 'black' ? 'rotate(180deg)' : 'none' }">
     <div v-for="row in 8" class="row" :key="row">
       <div v-for="col in 8" 
-        :class="getSquareClass(9 - row, col) + (isSelected(9 - row, col) ? ' selected' : '') + (isKingInCheck(9 - row, col) ? ' check' : '')" 
+        :class="getSquareClass(9 - row, col) + (isSelected(9 - row, col) ? ' selected' : '') + (isLastMove(9 - row, col) ? ' move' : '') + ' ' + (isKingInCheck(9 - row, col) ? ' check' : '')" 
         :key="`${9 - row}${col}`"
         :id="`${9 - row}-${col}`"
         :style="{ transform: this.player === 'black' ? 'rotate(180deg)' : 'none' }"
@@ -70,6 +70,12 @@ export default {
       promotionType: null,
       promotionFrom: null,
       promotionTo: null,
+      last_move: {
+        from: null,
+        to: null,
+        san: null
+      },
+      move_verify: null,
       showCheckmate: false,
       showCheck: false,
       startTime: null,
@@ -116,18 +122,22 @@ export default {
       // TODO: validation did the board change?
       const remote_game = new Chess(GameState.board)
 
+      this.last_move.from = GameState.last_move.from
+      this.last_move.to = GameState.last_move.to
+      debugger;
+
       this.timeWhite = GameState.players.white.time
       this.timeBlack = GameState.players.black.time
 
       this.startTimer(remote_game.turn() == 'w' ? 'white' : 'black')
 
-      if (this.last_move == GameState.last_move) {
+      if (this.move_verify == GameState.last_move.san) {
         this.game.undo()
         return
       }
-      this.last_move = game.history().at(-1)
-      if (this.game.history().at(-1) != GameState.last_move)
-        this.moveChessPiece(GameState.last_move)
+      this.move_verify = game.history().at(-1)
+      if (this.game.history().at(-1) != GameState.last_move.san)
+        this.moveChessPiece(GameState.last_move.san)
     },
     openPopup(from, to) {
       this.showPopup = true;
@@ -175,6 +185,10 @@ export default {
         return false
 
       return true
+    },
+    isLastMove(row, col) {
+      let field = this.translateToChessId(row, col);
+      return (field == this.last_move.to || field == this.last_move.from);
     },
     selectSquare(row, col) {
       const piece = this.translateToChessId(row, col);
@@ -438,20 +452,20 @@ export default {
   background-color: #4ab0d5bb
 }
 
+.square.white.move {
+  background-color: #f6fc4edd;
+}
+
+.square.black.move {
+  background-color: #e9ee27bb
+}
+
 .square.white.check {
   background-color: #e07d76ff;
 }
 
 .square.black.check {
   background-color: #dd5045bb
-}
-
-.square.white.move {
-  background-color: #e9ee27dd;
-}
-
-.square.black.move {
-  background-color: #a6aa25bb
 }
 
 .game-id {

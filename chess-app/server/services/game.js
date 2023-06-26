@@ -30,7 +30,11 @@ class Game
 			var result = this.game.move(san)
 			this.time[result.color] -= (Date.now() - this.timestamp)
 			this.timestamp = Date.now();
-			this.last_move = san
+			this.last_move = {
+				from: this.game.history().length > 0 ? this.game.history({ verbose: true }).at(-1).from : '',
+				to: this.game.history().length > 0 ? this.game.history({ verbose: true }).at(-1).to : '',
+				san: san
+			}
 		} catch (err) {
 			return false
 		}
