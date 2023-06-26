@@ -140,6 +140,21 @@ export default {
       this.showPopup = false;
 
       this.game.move({ from: this.promotionFrom, to: this.promotionTo, promotion: this.promotionType });
+      this.gameService.move(game.history().at(-1));
+
+      console.log(game.ascii());
+
+      if (game.isCheckmate()) {
+        console.log('Checkmate!');
+        this.showCheckmate = true;
+      } else if (game.isGameOver()) {
+        console.log('Draw!');
+      } else if (game.inCheck()) {
+        console.log('Check!');
+        this.showCheck=true;
+      }
+
+      this.removeHighlightedTile();
     },
     getSquareClass(row, col) {
       return (row + col) % 2 === 0 ? 'square black' : 'square white';
