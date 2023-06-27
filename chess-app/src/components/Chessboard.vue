@@ -121,7 +121,9 @@ export default {
       this.timeWhite = GameState.players.white.time
       this.timeBlack = GameState.players.black.time
 
-      this.startTimer(remote_game.turn() == 'w' ? 'white' : 'black')
+      if (GameState.status == 'running') {
+        this.startTimer(remote_game.turn() == 'w' ? 'white' : 'black')
+      }
 
       if (!GameState.last_move.success) {
         if (remote_game.turn() == this.player.at(0)) {
