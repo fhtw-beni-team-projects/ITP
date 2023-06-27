@@ -64,7 +64,7 @@ class GameService {
             return this.games[gameId].stateObj
         }
 
-        this.games[gameId].move(move);
+        let success = this.games[gameId].move(move);
 
         const players = this.#getPlayerStates(gameId)
         const board = this.#getBoard(gameId)

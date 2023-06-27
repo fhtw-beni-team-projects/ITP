@@ -33,9 +33,11 @@ class Game
 			this.last_move = {
 				from: this.game.history().length > 0 ? this.game.history({ verbose: true }).at(-1).from : '',
 				to: this.game.history().length > 0 ? this.game.history({ verbose: true }).at(-1).to : '',
-				san: san
+				san: san,
+				success: true
 			}
 		} catch (err) {
+			this.last_move.success = false
 			return false
 		}
 		return true

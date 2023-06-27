@@ -69,7 +69,6 @@ export default {
         to: null,
         san: null
       },
-      move_verify: null,
       showCheckmate: false,
       startTime: null,
       timerInterval: null,
@@ -124,13 +123,16 @@ export default {
 
       this.startTimer(remote_game.turn() == 'w' ? 'white' : 'black')
 
-      if (this.move_verify == GameState.last_move.san) {
-        this.game.undo()
+      if (!GameState.last_move.success) {
+        if (remote_game.turn() == this.player.at(0)) {
+          this.game.undo()
+        }
         return
       }
-      this.move_verify = game.history().at(-1)
-      if (this.game.history().at(-1) != GameState.last_move.san)
+
+      if (remote_game.turn() == this.player.at(0)) {
         this.moveChessPiece(GameState.last_move.san)
+      }
     },
     openPopup(from, to) {
       this.showPopup = true;
